@@ -303,6 +303,53 @@
   form.mc button:hover{ background:#FFD650; transform: translateY(-1px); }
   .finefile{ font-size:.82rem; color: var(--muted); margin: 4px 0 0; }
 
+  /* ---------------- signup confirmation dialog ---------------- */
+  .mc-overlay{
+    position: fixed; inset:0; z-index:100;
+    display:grid; place-items:center;
+    padding: var(--gutter);
+    background: rgba(2,10,14,.72);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+  }
+  .mc-overlay[hidden]{ display:none; }
+  .mc-dialog{
+    position:relative;
+    width:min(440px, 100%);
+    background: var(--ink-2);
+    border: 1px solid var(--ink-3);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 34px 30px 28px;
+    text-align:center;
+  }
+  .mc-dialog h3{
+    font-family: var(--display); font-weight:800;
+    font-size: 1.45rem; margin:0 0 10px; color: var(--cream);
+  }
+  .mc-dialog p{ margin:0; color: var(--muted); font-size:.95rem; line-height:1.55; }
+  .mc-mark{
+    width:46px; height:46px; margin:0 auto 16px;
+    border-radius:999px; display:grid; place-items:center;
+    background: rgba(246,196,37,.14); color: var(--gold);
+    font-size:1.4rem; line-height:1; font-weight:700;
+  }
+  .mc-dialog[data-state="error"] .mc-mark{ background: rgba(255,154,77,.14); color: var(--ember); }
+  .mc-dialog .mc-ok{
+    font-family: var(--body); font-weight:700; font-size:.9rem;
+    margin-top: 22px;
+    background: var(--gold); color:#1A1200;
+    border:0; border-radius:999px; padding: 11px 26px; cursor:pointer;
+    transition: background-color .15s ease;
+  }
+  .mc-dialog .mc-ok:hover{ background:#FFD650; }
+  .mc-x{
+    position:absolute; top:8px; right:10px;
+    background:none; border:0; color: var(--muted);
+    font-size:1.3rem; line-height:1; cursor:pointer; padding:6px 9px; border-radius:6px;
+  }
+  .mc-x:hover{ color: var(--cream); }
+
   /* ---------------- footer ---------------- */
   footer{
     border-top: 1px solid var(--ink-3);
@@ -620,4 +667,122 @@
 
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+
+<div class="mc-overlay" id="mc-overlay" hidden>
+  <div class="mc-dialog" id="mc-dialog" role="dialog" aria-modal="true" aria-labelledby="mc-dialog-title">
+    <button type="button" class="mc-x" id="mc-dialog-x" aria-label="Close">&times;</button>
+    <div class="mc-mark" id="mc-dialog-mark" aria-hidden="true">&#10003;</div>
+    <h3 id="mc-dialog-title">You&rsquo;re on the list</h3>
+    <p id="mc-dialog-msg">Check your inbox to confirm your subscription.</p>
+    <button type="button" class="mc-ok" id="mc-dialog-ok">Close</button>
+  </div>
+</div>
+
+<script>
+/* Submit the signup to Mailchimp in the background (JSONP) so the reader
+   stays on the page. Without JavaScript the form still posts normally. */
+(function(){
+  var form = document.querySelector('form.mc');
+  if (!form) return;
+
+  var overlay = document.getElementById('mc-overlay');
+  var dialog  = document.getElementById('mc-dialog');
+  var markEl  = document.getElementById('mc-dialog-mark');
+  var titleEl = document.getElementById('mc-dialog-title');
+  var msgEl   = document.getElementById('mc-dialog-msg');
+  var okBtn   = document.getElementById('mc-dialog-ok');
+  var xBtn    = document.getElementById('mc-dialog-x');
+  var submit  = form.querySelector('button[type="submit"]');
+  var lastFocus = null;
+
+  function open(state, title, msg){
+    dialog.setAttribute('data-state', state);
+    markEl.innerHTML = state === 'error' ? '!' : '&#10003;';
+    titleEl.textContent = title;
+    msgEl.textContent = msg;
+    lastFocus = document.activeElement;
+    overlay.hidden = false;
+    okBtn.focus();
+  }
+  function close(){
+    overlay.hidden = true;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  okBtn.addEventListener('click', close);
+  xBtn.addEventListener('click', close);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) close(); });
+  document.addEventListener('keydown', function(e){
+    if ((e.key === 'Escape' || e.keyCode === 27) && !overlay.hidden) close();
+  });
+
+  /* Mailchimp returns messages containing markup and a numeric prefix. */
+  function plain(html){
+    var d = document.createElement('div');
+    d.innerHTML = html || '';
+    return (d.textContent || '').replace(/^\d+\s*-\s*/, '').trim();
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    var emailEl = form.querySelector('#mce-EMAIL');
+    var email = (emailEl.value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      open('error', 'Check that address', 'That does not look like a valid email address.');
+      emailEl.focus();
+      return;
+    }
+
+    var label = submit.textContent;
+    submit.disabled = true;
+    submit.textContent = 'Joining…';
+
+    var cb = 'mcCallback' + Date.now();
+    var parts = [form.action.replace('/subscribe/post?', '/subscribe/post-json?')];
+    var inputs = form.querySelectorAll('input[name]');
+    for (var i = 0; i < inputs.length; i++){
+      parts.push(encodeURIComponent(inputs[i].name) + '=' + encodeURIComponent(inputs[i].value));
+    }
+    parts.push('c=' + cb);
+
+    var script = document.createElement('script');
+    var done = false;
+    var timer = setTimeout(function(){ finish(null); }, 12000);
+
+    function finish(data){
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try { delete window[cb]; } catch(err){ window[cb] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+      submit.disabled = false;
+      submit.textContent = label;
+
+      if (!data){
+        open('error', 'Something went wrong',
+             'We could not reach the mailing list just now. Please try again in a moment.');
+        return;
+      }
+      if (data.result === 'success'){
+        form.reset();
+        open('success', 'You’re on the list',
+             plain(data.msg) || 'Check your inbox to confirm your subscription.');
+        return;
+      }
+      var m = plain(data.msg);
+      if (/already subscribed/i.test(m)){
+        open('success', 'You’re already on the list',
+             'That address is on the list already — nothing more to do.');
+      } else {
+        open('error', 'That did not work', m || 'Please check the address and try again.');
+      }
+    }
+
+    window[cb] = function(data){ finish(data); };
+    script.src = parts.join('&');
+    script.onerror = function(){ finish(null); };
+    document.body.appendChild(script);
+  });
+})();
 </script>
