@@ -1,0 +1,623 @@
+<title>Curious Minds Books</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Karla:wght@400;500;700&display=swap">
+
+<style>
+  /* ---- Tokens: this page commits to one night-sky world, matching the covers ---- */
+  :root{
+    --ink:        #05171E;   /* deep teal-black ground */
+    --ink-2:      #0A2833;   /* raised surface */
+    --ink-3:      #113642;   /* hairlines, wells */
+    --gold:       #F6C425;   /* cover title amber */
+    --ember:      #FF9A4D;   /* the glowing cloud */
+    --cream:      #F3EEE2;   /* body text */
+    --muted:      #93B3BC;   /* desaturated teal-grey */
+    --shadow:     0 18px 40px rgba(0,0,0,.45);
+
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --body: "Karla", "Helvetica Neue", Arial, sans-serif;
+
+    --gutter: clamp(18px, 5vw, 56px);
+    --maxw: 1120px;
+    color-scheme: dark;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--ink);
+    background-image:
+      radial-gradient(1200px 700px at 78% -8%, rgba(255,154,77,.14), transparent 62%),
+      radial-gradient(900px 620px at 8% 4%, rgba(31,112,133,.30), transparent 60%),
+      radial-gradient(700px 500px at 50% 108%, rgba(246,196,37,.07), transparent 65%);
+    background-attachment: fixed;
+    color: var(--cream);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* faint star field, no animation */
+  body::before{
+    content:"";
+    position: fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      radial-gradient(1.4px 1.4px at 12% 18%, rgba(255,255,255,.55), transparent),
+      radial-gradient(1.2px 1.2px at 27% 62%, rgba(255,255,255,.40), transparent),
+      radial-gradient(1.6px 1.6px at 44% 12%, rgba(255,255,255,.50), transparent),
+      radial-gradient(1.1px 1.1px at 61% 44%, rgba(255,255,255,.35), transparent),
+      radial-gradient(1.5px 1.5px at 73% 76%, rgba(255,255,255,.45), transparent),
+      radial-gradient(1.2px 1.2px at 88% 30%, rgba(255,255,255,.38), transparent),
+      radial-gradient(1.3px 1.3px at 33% 88%, rgba(255,255,255,.32), transparent),
+      radial-gradient(1.1px 1.1px at 92% 66%, rgba(255,255,255,.30), transparent),
+      radial-gradient(1.4px 1.4px at 6% 82%, rgba(255,255,255,.34), transparent);
+  }
+
+  .wrap{
+    position: relative; z-index:1;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  a{ color: var(--gold); }
+  img{ max-width:100%; display:block; }
+
+  :focus-visible{
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ---------------- header ---------------- */
+  .topbar{
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 30;
+    background: rgba(5,23,30,.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--ink-3);
+  }
+  .topbar .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding-block:14px; flex-wrap: wrap;
+  }
+  .brand{
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 1.12rem;
+    letter-spacing:.01em;
+    color: var(--cream);
+    text-decoration:none;
+    display:flex; align-items:baseline; gap:.45rem;
+  }
+  .brand em{ font-style: italic; color: var(--gold); font-weight:600; }
+  .navlinks{ display:flex; gap: clamp(14px,3vw,28px); align-items:center; }
+  .navlinks a{
+    font-family: var(--body);
+    font-size:.82rem;
+    text-transform: uppercase;
+    letter-spacing:.09em;
+    font-weight:700;
+    color: var(--muted);
+    text-decoration:none;
+  }
+  .navlinks a:hover{ color: var(--cream); }
+
+  /* ---------------- hero ---------------- */
+  .hero{ padding-block: clamp(48px, 8vw, 92px) clamp(32px, 5vw, 56px); }
+  .eyebrow{
+    font-size:.76rem; text-transform:uppercase; letter-spacing:.17em;
+    font-weight:700; color: var(--ember); margin:0 0 18px;
+  }
+  h1{
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(2.3rem, 6vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -.015em;
+    margin: 0 0 22px;
+    text-wrap: balance;
+    max-width: 17ch;
+  }
+  h1 em{ font-style: italic; color: var(--gold); }
+  .lede{
+    font-size: clamp(1.02rem, 1.7vw, 1.2rem);
+    color: #CFE0E5;
+    max-width: 58ch;
+    margin: 0 0 30px;
+  }
+  .hero-actions{ display:flex; gap:14px; flex-wrap: wrap; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:.5rem;
+    font-family: var(--body); font-weight:700; font-size:.92rem;
+    letter-spacing:.02em;
+    padding: 13px 22px;
+    border-radius: 999px;
+    text-decoration:none;
+    border: 1px solid transparent;
+    transition: transform .15s ease, background-color .15s ease, border-color .15s ease;
+  }
+  .btn-primary{ background: var(--gold); color: #1A1200; }
+  .btn-primary:hover{ background: #FFD650; transform: translateY(-1px); }
+  .btn-ghost{ border-color: var(--ink-3); color: var(--cream); background: rgba(255,255,255,.03); }
+  .btn-ghost:hover{ border-color: var(--muted); transform: translateY(-1px); }
+
+  /* ---------------- section frame ---------------- */
+  section{ scroll-margin-top: 84px; }
+  .shelf{ padding-block: clamp(36px, 6vw, 64px); }
+  .shelf-head{
+    border-top: 1px solid var(--ink-3);
+    padding-top: 26px;
+    margin-bottom: 34px;
+    display:grid; gap: 10px;
+  }
+  .shelf-head h2{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 3.2vw, 2.1rem);
+    line-height:1.15;
+    margin:0;
+    text-wrap: balance;
+  }
+  .shelf-head p{
+    margin:0; color: var(--muted); max-width: 62ch; font-size:.98rem;
+  }
+
+  /* ---------------- book rows ---------------- */
+  .books{ display:grid; gap: clamp(26px, 4vw, 42px); }
+
+  .book{
+    display:grid;
+    grid-template-columns: minmax(150px, 210px) 1fr;
+    gap: clamp(20px, 3.5vw, 40px);
+    align-items: start;
+  }
+  .cover{
+    position:relative;
+    border-radius: 6px;
+    overflow:hidden;
+    box-shadow: var(--shadow);
+    transition: transform .2s ease;
+  }
+  .cover img{ width:100%; height:auto; }
+  .book:hover .cover{ transform: translateY(-3px); }
+
+  .agechip{
+    position:absolute; top:10px; right:10px;
+    width: 46px; height:46px; border-radius:50%;
+    background: var(--gold); color:#1A1200;
+    display:grid; place-content:center; text-align:center;
+    font-family: var(--body); font-weight:700; line-height:1;
+    font-size:.62rem; letter-spacing:.04em;
+    box-shadow: 0 3px 10px rgba(0,0,0,.4);
+  }
+  .agechip b{ display:block; font-size:1.02rem; letter-spacing:0; }
+
+  .book-body h3{
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(1.22rem, 2.4vw, 1.55rem);
+    line-height:1.2;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .book-sub{
+    margin: 0 0 14px;
+    color: var(--muted);
+    font-size:.93rem;
+    line-height:1.5;
+  }
+  .book-body p.desc{ margin: 0 0 16px; max-width: 58ch; }
+  .specs{
+    list-style:none; margin: 0 0 20px; padding:0;
+    display:flex; flex-wrap: wrap; gap: 8px;
+  }
+  .specs li{
+    font-size:.74rem; text-transform: uppercase; letter-spacing:.08em;
+    font-weight:700; color:#B7D2D9;
+    background: rgba(255,255,255,.045);
+    border: 1px solid var(--ink-3);
+    border-radius: 999px;
+    padding: 5px 12px;
+  }
+
+  /* ---------------- about ---------------- */
+  .about{
+    padding-block: clamp(40px, 6vw, 72px);
+  }
+  .about-inner{
+    border-top: 1px solid var(--ink-3);
+    padding-top: 30px;
+    display:grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    gap: clamp(24px, 5vw, 60px);
+    align-items: start;
+  }
+  .about h2{
+    font-family: var(--display); font-weight:600;
+    font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+    margin:0; line-height:1.15; text-wrap: balance;
+  }
+  .about h2 em{ font-style:italic; color: var(--gold); }
+  .about p{ margin: 0 0 18px; max-width: 62ch; }
+  .about p:last-child{ margin-bottom:0; }
+  .rule-list{
+    margin: 26px 0 0; padding: 22px 24px;
+    background: var(--ink-2);
+    border: 1px solid var(--ink-3);
+    border-left: 3px solid var(--ember);
+    border-radius: 4px;
+    list-style:none;
+    display:grid; gap: 12px;
+  }
+  .rule-list li{ font-size:.96rem; color:#DCE9EC; }
+  .rule-list strong{ color: var(--cream); }
+
+  /* ---------------- signup ---------------- */
+  .signup{ padding-block: clamp(40px, 6vw, 72px) clamp(48px,7vw,80px); }
+  .signup-card{
+    background: linear-gradient(160deg, var(--ink-2), #071F28);
+    border: 1px solid var(--ink-3);
+    border-radius: 10px;
+    padding: clamp(26px, 4.5vw, 48px);
+    box-shadow: var(--shadow);
+  }
+  .signup-card h2{
+    font-family: var(--display); font-weight:600;
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
+    margin:0 0 12px; line-height:1.15; text-wrap: balance;
+  }
+  .signup-card p{ margin:0 0 24px; color:#CFE0E5; max-width: 54ch; }
+
+  form.mc{ display:grid; gap: 14px; max-width: 520px; }
+  .field{ display:grid; gap:7px; }
+  .field label{
+    font-size:.74rem; text-transform:uppercase; letter-spacing:.1em;
+    font-weight:700; color: var(--muted);
+  }
+  .field input{
+    font-family: var(--body); font-size:1rem;
+    color: var(--cream);
+    background: rgba(0,0,0,.28);
+    border: 1px solid var(--ink-3);
+    border-radius: 6px;
+    padding: 13px 15px;
+    width:100%;
+  }
+  .field input::placeholder{ color:#5F8089; }
+  .field input:focus{ border-color: var(--gold); outline:none; }
+  .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  form.mc button{
+    justify-self:start;
+    font-family: var(--body); font-weight:700; font-size:.95rem;
+    background: var(--gold); color:#1A1200;
+    border:0; border-radius:999px;
+    padding: 14px 30px; cursor:pointer;
+    transition: background-color .15s ease, transform .15s ease;
+  }
+  form.mc button:hover{ background:#FFD650; transform: translateY(-1px); }
+  .finefile{ font-size:.82rem; color: var(--muted); margin: 4px 0 0; }
+
+  /* ---------------- footer ---------------- */
+  footer{
+    border-top: 1px solid var(--ink-3);
+    padding-block: 30px 46px;
+    color: var(--muted);
+    font-size:.86rem;
+  }
+  footer .wrap{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  footer a{ color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  footer a:hover{ color: var(--cream); }
+
+  /* ---------------- responsive ---------------- */
+  @media (max-width: 720px){
+    .about-inner{ grid-template-columns: 1fr; }
+    .book{ grid-template-columns: 130px 1fr; gap:18px; }
+    .row2{ grid-template-columns: 1fr; }
+  }
+  @media (max-width: 460px){
+    .book{ grid-template-columns: 1fr; }
+    .cover{ max-width: 210px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">Curious <em>Minds</em></a>
+    <nav class="navlinks" aria-label="Main">
+      <a href="#books">Books</a>
+      <a href="#about">About</a>
+      <a href="#mailing-list">Mailing&nbsp;list</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Story collections for ages 7&ndash;12</p>
+      <h1>Books about the kids who <em>try the hard thing</em> anyway.</h1>
+      <p class="lede">
+        Curious Minds writes short-story collections for children and the grown-ups who
+        choose their books. Every story starts with a problem a child will recognise &mdash;
+        a shaking voice, a lunch table with no seat, a first attempt that falls flat &mdash;
+        and follows her until she finds something that works.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#books">Browse the books</a>
+        <a class="btn btn-ghost" href="#mailing-list">Get new release news</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="books" class="shelf">
+    <div class="wrap">
+      <div class="shelf-head">
+        <h2>You Are Amazing &amp; Brilliant</h2>
+        <p>
+          A graded series &mdash; each book is written for one age, so the situations, the
+          sentence length and the story length all fit the reader you are buying for.
+          Twelve stories per book, one full-page illustration each, and two pages at the
+          back of every story to talk it over or try it out.
+        </p>
+      </div>
+
+      <div class="books">
+
+        <article class="book">
+          <div class="cover">
+            <img src="covers/age7.jpg" width="700" height="1050"
+                 alt="Cover of You Are Amazing &amp; Brilliant, Age 7: a girl in glasses reading a glowing book against a starry sky.">
+            <div class="agechip">Age<b>7</b></div>
+          </div>
+          <div class="book-body">
+            <h3>You Are Amazing &amp; Brilliant &mdash; Age 7</h3>
+            <p class="book-sub">
+              Inspiring Stories for 7 Year Old Girls About Courage, Kindness, Big Feelings
+              and Never Giving Up
+            </p>
+            <p class="desc">
+              Short enough to finish in one sitting, written for a reader who is still
+              getting comfortable going it alone. Big feelings get named rather than tidied
+              away, and every story ends with something she can actually do.
+            </p>
+            <ul class="specs">
+              <li>12 stories</li>
+              <li>700&ndash;900 words each</li>
+              <li>Illustrated</li>
+              <li>Paperback</li>
+            </ul>
+            <a class="btn btn-primary" href="https://www.amazon.com/dp/B0HJF8JLBD"
+               target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+        </article>
+
+        <article class="book">
+          <div class="cover">
+            <img src="covers/age8.jpg" width="700" height="1050"
+                 alt="Cover of You Are Amazing &amp; Brilliant, Age 8: a girl in a denim jacket reading a glowing book against a starry sky.">
+            <div class="agechip">Age<b>8</b></div>
+          </div>
+          <div class="book-body">
+            <h3>You Are Amazing &amp; Brilliant &mdash; Age 8</h3>
+            <p class="book-sub">
+              Inspiring Stories for 8 Year Old Girls About Confidence, Friendship, Courage
+              and Kindness
+            </p>
+            <p class="desc">
+              Eight is the year friendships get complicated. These stories sit right in
+              that &mdash; being left out, being the new one, wanting to be liked and wanting
+              to be honest at the same time &mdash; and let her watch someone work it out.
+            </p>
+            <ul class="specs">
+              <li>12 stories</li>
+              <li>Illustrated</li>
+              <li>Paperback</li>
+            </ul>
+            <a class="btn btn-primary" href="https://www.amazon.com/dp/B0HK9K22F1"
+               target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+        </article>
+
+        <article class="book">
+          <div class="cover">
+            <img src="covers/age9.jpg" width="700" height="1050"
+                 alt="Cover of You Are Amazing &amp; Brilliant, Age 9: a girl in glasses and a denim jacket reading a glowing book against a starry sky.">
+            <div class="agechip">Age<b>9</b></div>
+          </div>
+          <div class="book-body">
+            <h3>You Are Amazing &amp; Brilliant &mdash; Age 9</h3>
+            <p class="book-sub">
+              Inspiring Stories for 9 Year Old Girls About Self-Confidence, Friendship,
+              Courage and Kindness
+            </p>
+            <p class="desc">
+              Longer stories for a reader who can hold more. Nobody here is rescued by an
+              adult with the right speech &mdash; the girls try the easy fix first, watch it
+              fail, and go back in with a better idea.
+            </p>
+            <ul class="specs">
+              <li>12 stories</li>
+              <li>1,100&ndash;1,400 words each</li>
+              <li>129 pages</li>
+              <li>Paperback</li>
+            </ul>
+            <a class="btn btn-primary" href="https://www.amazon.com/dp/B0HJFGK84L"
+               target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="shelf">
+    <div class="wrap">
+      <div class="shelf-head">
+        <h2>True Stories</h2>
+        <p>
+          For older readers &mdash; real people who asked a question nobody had answered,
+          built something, got it wrong, and kept going.
+        </p>
+      </div>
+
+      <div class="books">
+
+        <article class="book">
+          <div class="cover">
+            <img src="covers/innovative-girls.jpg" width="700" height="1050"
+                 alt="Cover of You Are Amazing &amp; Brilliant: True Stories of Innovative Girls Who Changed the World.">
+            <div class="agechip">Age<b>10</b></div>
+          </div>
+          <div class="book-body">
+            <h3>True Stories of Innovative Girls Who Changed&nbsp;the&nbsp;World</h3>
+            <p class="book-sub">You Are Amazing &amp; Brilliant &middot; Change The World</p>
+            <p class="desc">
+              Smart, curious girls need more than encouragement &mdash; they need real role
+              models. These are not stories about waiting or wishing. They are stories about
+              thinking, trying, failing, and continuing.
+            </p>
+            <ul class="specs">
+              <li>Ages 9&ndash;12</li>
+              <li>Non-fiction</li>
+              <li>Kindle &amp; paperback</li>
+            </ul>
+            <a class="btn btn-primary" href="https://www.amazon.com/dp/B0GX379YYX"
+               target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+        </article>
+
+        <article class="book">
+          <div class="cover">
+            <img src="covers/nerds.jpg" width="700" height="1050"
+                 alt="Cover of Why Nerds Rule the World: a boy in glasses holding a glowing flask and an open book.">
+            <div class="agechip">Ages<b>9&ndash;12</b></div>
+          </div>
+          <div class="book-body">
+            <h3>Why Nerds Rule the World</h3>
+            <p class="book-sub">
+              True Stories of Curious Minds Who Changed the World &middot; For Boys Ages 9&ndash;12
+            </p>
+            <p class="desc">
+              The kid who takes the radio apart, asks one question too many, and gets called
+              a nerd for it. This one is about where that ends up &mdash; told through people
+              who were exactly that child.
+            </p>
+            <ul class="specs">
+              <li>Ages 9&ndash;12</li>
+              <li>Non-fiction</li>
+              <li>Kindle &amp; paperback</li>
+            </ul>
+            <a class="btn btn-primary" href="https://www.amazon.com/dp/B0FN7P5YK7"
+               target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="wrap">
+      <div class="about-inner">
+        <h2>About <em>Curious Minds</em></h2>
+        <div>
+          <p>
+            Curious Minds writes books for kids ages 7 to 12 and the grown-ups who choose
+            them. Our story collections follow ordinary children through problems they will
+            recognise: a voice that shakes when reading aloud, being left out at recess, a
+            first try that does not work. Each one tries the easy thing first, it falls
+            short, and then they find something that does.
+          </p>
+          <p>
+            Our true-story books introduce young readers to real people who asked questions,
+            built things, and kept going when it got hard.
+          </p>
+
+          <ul class="rule-list">
+            <li><strong>The child solves it.</strong> No adult arrives with the right speech at the end.</li>
+            <li><strong>The first attempt fails.</strong> That is the part worth reading.</li>
+            <li><strong>Problems can start on a screen. They get fixed in a room</strong> &mdash; out loud, with a person.</li>
+            <li><strong>One age per book.</strong> A seven-year-old and a ten-year-old do not need the same story.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mailing-list" class="signup">
+    <div class="wrap">
+      <div class="signup-card">
+        <h2>Know when the next one lands</h2>
+        <p>
+          New books in the series, launch discounts, and the occasional free printable.
+          A few emails a year &mdash; nothing else, and you can leave any time.
+        </p>
+
+        <!--
+          ====================================================================
+          MAILCHIMP  —  REPLACE THE form action URL BELOW.
+          Mailchimp  >  Audience  >  Signup forms  >  Embedded form  >  Continue.
+          Copy the URL inside  <form action="...">  from the generated code and
+          paste it over MAILCHIMP_FORM_ACTION_URL below. It looks like:
+          https://curiousmindspress.us11.list-manage.com/subscribe/post?u=XXXX&id=YYYY
+          Then copy the hidden anti-bot input (name starts with  b_ ) from that
+          same generated code and paste it over the placeholder further down.
+          Do NOT put an API key on this page — it is public to anyone.
+          ====================================================================
+        -->
+        <form class="mc"
+              action="MAILCHIMP_FORM_ACTION_URL"
+              method="post"
+              target="_blank"
+              novalidate>
+
+          <div class="row2">
+            <div class="field">
+              <label for="mce-FNAME">First name <span style="text-transform:none;letter-spacing:0">(optional)</span></label>
+              <input type="text" name="FNAME" id="mce-FNAME" autocomplete="given-name" placeholder="Jane">
+            </div>
+            <div class="field">
+              <label for="mce-EMAIL">Email address</label>
+              <input type="email" name="EMAIL" id="mce-EMAIL" required autocomplete="email" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <!-- Mailchimp anti-bot field: must stay off-screen, and must be replaced
+               with the real  b_xxxxx_yyyyy  name from your embed code. -->
+          <div style="position:absolute; left:-5000px;" aria-hidden="true">
+            <input type="text" name="b_MAILCHIMP_U_VALUE_MAILCHIMP_ID_VALUE" id="mc-antibot" tabindex="-1" value="">
+          </div>
+
+          <button type="submit" name="subscribe" id="mc-embedded-subscribe">Join the list</button>
+          <p class="finefile">We never share your address. Unsubscribe in one click.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; <span id="yr">2026</span> Curious Minds. All rights reserved.</span>
+    <span>
+      <a href="#books">Books</a> &nbsp;&middot;&nbsp;
+      <a href="#about">About</a> &nbsp;&middot;&nbsp;
+      <a href="mailto:hello@curiousmindspress.com">Contact</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
