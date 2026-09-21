@@ -268,6 +268,16 @@
   .btn-ghost{ border-color: var(--rule); color: var(--ink); }
   .btn-ghost:hover{ border-color: var(--ink-soft); transform: translateY(-1px); }
   .end .actions{ display:flex; gap:12px; flex-wrap:wrap; }
+  .end p.offer{
+    font-family: var(--display); font-size: clamp(1.05rem,2.8vw,1.2rem);
+    color: var(--ember); margin: 0 0 20px;
+  }
+  .end p.offer strong{ color: var(--ember); font-weight:600; }
+  .end p.aside{
+    margin: 26px 0 0; padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    font-size:.92rem; line-height:1.6;
+  }
 
   footer{
     padding-block: 30px 44px;
@@ -1033,11 +1043,16 @@
         <i>You Are Amazing &amp; Brilliant &mdash; Age 7</i>, along with the illustrations and
         the write-in pages at the back of each one.
       </p>
+      <p class="offer">The paperback is <strong>50% off</strong> right now.</p>
       <div class="actions">
         <a class="btn btn-primary" href="https://www.amazon.com/dp/B0HJF8JLBD"
-           target="_blank" rel="noopener">Get the book on Amazon</a>
+           target="_blank" rel="noopener">Get the paperback &mdash; 50% off</a>
         <a class="btn btn-ghost" href="/#books">See the other books</a>
       </div>
+      <p class="aside">
+        Reading it with her? We'd love to know what you both thought &mdash; a line or two on
+        the Amazon page helps other parents more than anything we could write ourselves.
+      </p>
     </div>
   </section>
 
